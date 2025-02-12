@@ -1,6 +1,6 @@
 MIT License
 
-Copyright (c) 2019-2023 Aliaksandr Siarohin
+Copyright (c) 2025 arslanshahid65
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal

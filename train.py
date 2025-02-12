@@ -4,7 +4,7 @@ import torch
 from torch.utils.data import DataLoader
 
 from logger import Logger
-from modules.model import GeneratorFullModel, DiscriminatorFullModel
+from inter-modules.model import GeneratorFullModel, DiscriminatorFullModel
 
 from torch.optim.lr_scheduler import MultiStepLR
 
