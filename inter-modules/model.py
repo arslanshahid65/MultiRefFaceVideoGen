@@ -6,6 +6,7 @@ from torchvision import models
 import numpy as np
 from torch.autograd import grad
 
+# TO DO: Integrate multi-frame pooling and multi-frame attention modules into the model
 
 class Vgg19(torch.nn.Module):
     """

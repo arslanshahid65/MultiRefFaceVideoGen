@@ -10,6 +10,8 @@ import pandas as pd
 from augmentation import AllAugmentationTransform
 import glob
 
+# TO DO: Enable option to load 3 and 5 source frames
+# TO DO: Experiment with random source frame selection and farthest point sampling 
 
 def read_video(name, frame_shape):
     """
