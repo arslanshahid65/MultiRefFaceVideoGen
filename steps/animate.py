@@ -4,15 +4,16 @@ from tqdm import tqdm
 import torch
 from torch.utils.data import DataLoader
 
-from frames_dataset import PairedDataset
+from steps.load_frames import PairedDataset
 from logger import Logger, Visualizer
 import imageio
 from scipy.spatial import ConvexHull
 import numpy as np
 
 from sync_batchnorm import DataParallelWithCallback
+from zenml import step
 
-
+@step
 def normalize_kp(kp_source, kp_driving, kp_driving_initial, adapt_movement_scale=False,
                  use_relative_movement=False, use_relative_jacobian=False):
     if adapt_movement_scale:
@@ -35,7 +36,7 @@ def normalize_kp(kp_source, kp_driving, kp_driving_initial, adapt_movement_scale
 
     return kp_new
 
-
+@step
 def animate(config, generator, kp_detector, checkpoint, log_dir, dataset):
     log_dir = os.path.join(log_dir, 'animation')
     png_dir = os.path.join(log_dir, 'png')

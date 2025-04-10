@@ -12,7 +12,7 @@ from sync_batchnorm import DataParallelWithCallback
 
 from modules.generator import OcclusionAwareGenerator
 from modules.keypoint_detector import KPDetector
-from animate import normalize_kp
+from pipelines.scripts.animate import normalize_kp
 
 import ffmpeg
 from os.path import splitext

@@ -6,8 +6,9 @@ from logger import Logger, Visualizer
 import numpy as np
 import imageio
 from sync_batchnorm import DataParallelWithCallback
+from zenml import step
 
-
+@step
 def reconstruction(config, generator, kp_detector, checkpoint, log_dir, dataset):
     png_dir = os.path.join(log_dir, 'reconstruction/png')
     log_dir = os.path.join(log_dir, 'reconstruction')

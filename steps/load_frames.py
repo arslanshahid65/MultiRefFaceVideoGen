@@ -1,3 +1,4 @@
+from zenml import step
 import os
 from skimage import io, img_as_float32
 from skimage.color import gray2rgb
@@ -5,13 +6,23 @@ from sklearn.model_selection import train_test_split
 from imageio import mimread
 
 import numpy as np
-from torch.utils.data import Dataset
+from torch.utils.data import Dataset, DataLoader
 import pandas as pd
-from augmentation import AllAugmentationTransform
+from steps.augmentation import AllAugmentationTransform
 import glob
+
 
 # TO DO: Enable option to load 3 and 5 source frames
 # TO DO: Experiment with random source frame selection and farthest point sampling 
+
+@step
+def load_dataset(config, is_train=True) -> DataLoader:
+    train_params = config
+    dataset = FramesDataset(is_train= is_train, **config['dataset_params'])
+    if 'num_repeats' in train_params or train_params['num_repeats'] != 1:
+        dataset = DatasetRepeater(dataset, train_params['num_repeats'])
+    frames_data = DataLoader(dataset, batch_size=train_params['batch_size'], shuffle=True, num_workers=6, drop_last=True)
+    return frames_data
 
 def read_video(name, frame_shape):
     """

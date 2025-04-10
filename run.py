@@ -8,17 +8,17 @@ from argparse import ArgumentParser
 from time import gmtime, strftime
 from shutil import copy
 
-from frames_dataset import FramesDataset
+from pipelines.scripts.frames_dataset import FramesDataset
 
-from modules.generator import OcclusionAwareGenerator
-from modules.discriminator import MultiScaleDiscriminator
-from modules.keypoint_detector import KPDetector
+from inter_modules.generator import OcclusionAwareGenerator
+from inter_modules.discriminator import MultiScaleDiscriminator
+from inter_modules.keypoint_detector import KPDetector
 
 import torch
 
-from train import train
-from reconstruction import reconstruction
-from animate import animate
+from pipelines import training
+
+# to do: move checkpoint loading and model preparation steps to the train_pipeline
 
 if __name__ == "__main__":
     

@@ -10,11 +10,13 @@ from torch.optim.lr_scheduler import MultiStepLR
 
 from sync_batchnorm import DataParallelWithCallback
 
-from frames_dataset import DatasetRepeater
-
+from pipelines.scripts.frames_dataset import DatasetRepeater
+from zenml import step
 # TO DO: Enable Training with multiple source frames
 
-def train(config, generator, discriminator, kp_detector, checkpoint, log_dir, dataset, device_ids):
+
+@step
+def train(config, generator, discriminator, kp_detector, checkpoint, log_dir, frames_data, device_ids):
     train_params = config['train_params']
 
     optimizer_generator = torch.optim.Adam(generator.parameters(), lr=train_params['lr_generator'], betas=(0.5, 0.999))
@@ -35,10 +37,6 @@ def train(config, generator, discriminator, kp_detector, checkpoint, log_dir, da
     scheduler_kp_detector = MultiStepLR(optimizer_kp_detector, train_params['epoch_milestones'], gamma=0.1,
                                         last_epoch=-1 + start_epoch * (train_params['lr_kp_detector'] != 0))
 
-    if 'num_repeats' in train_params or train_params['num_repeats'] != 1:
-        dataset = DatasetRepeater(dataset, train_params['num_repeats'])
-    dataloader = DataLoader(dataset, batch_size=train_params['batch_size'], shuffle=True, num_workers=6, drop_last=True)
-
     generator_full = GeneratorFullModel(kp_detector, generator, discriminator, train_params)
     discriminator_full = DiscriminatorFullModel(kp_detector, generator, discriminator, train_params)
 
@@ -48,7 +46,7 @@ def train(config, generator, discriminator, kp_detector, checkpoint, log_dir, da
 
     with Logger(log_dir=log_dir, visualizer_params=config['visualizer_params'], checkpoint_freq=train_params['checkpoint_freq']) as logger:
         for epoch in trange(start_epoch, train_params['num_epochs']):
-            for x in dataloader:
+            for x in frames_data:
                 losses_generator, generated = generator_full(x)
 
                 loss_values = [val.mean() for val in losses_generator.values()]
