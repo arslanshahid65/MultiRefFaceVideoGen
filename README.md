@@ -1,4 +1,4 @@
 # End to End Deep Learning Based Video Coding for Video Conferencing.
 
-This project explores multi reference frame fusion techniques to improve generation of face videos using attention in existing First Order Motion Model.   
+The project aims to develop a end to end video compression pipeline with novel attention based multi reference fusion in existing First Order Motion Model based codec.   
  
