@@ -8,7 +8,7 @@ from argparse import ArgumentParser
 from time import gmtime, strftime
 from shutil import copy
 
-from pipelines.scripts.frames_dataset import FramesDataset
+from src.frames_dataset import FramesDataset
 
 from inter_modules.generator import OcclusionAwareGenerator
 from inter_modules.discriminator import MultiScaleDiscriminator

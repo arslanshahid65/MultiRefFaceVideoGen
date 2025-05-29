@@ -10,7 +10,7 @@ from torch.optim.lr_scheduler import MultiStepLR
 
 from sync_batchnorm import DataParallelWithCallback
 
-from pipelines.scripts.frames_dataset import DatasetRepeater
+from src.frames_dataset import DatasetRepeater
 from zenml import step
 # TO DO: Enable Training with multiple source frames
 
