@@ -8,15 +8,15 @@ from argparse import ArgumentParser
 from time import gmtime, strftime
 from shutil import copy
 
-from src.frames_dataset import FramesDataset
+from utils.frames_dataset import FramesDataset
 
-from inter_modules.generator import OcclusionAwareGenerator
-from inter_modules.discriminator import MultiScaleDiscriminator
-from inter_modules.keypoint_detector import KPDetector
+from src.models.inter_models.generator import OcclusionAwareGenerator
+from src.models.inter_models.discriminator import MultiScaleDiscriminator
+from src.models.inter_models.keypoint_detector import KPDetector
 
 import torch
 
-from pipelines import training
+from pipelines import train_model
 
 # to do: move checkpoint loading and model preparation steps to the train_pipeline
 
@@ -78,7 +78,8 @@ if __name__ == "__main__":
 
     if opt.mode == 'train':
         print("Training...")
-        train(config, generator, discriminator, kp_detector, opt.checkpoint, log_dir, dataset, opt.device_ids)
+        train_model.training_pipeline()
+        #train(config, generator, discriminator, kp_detector, opt.checkpoint, log_dir, dataset, opt.device_ids)
     elif opt.mode == 'reconstruction':
         print("Reconstruction...")
         reconstruction(config, generator, kp_detector, opt.checkpoint, log_dir, dataset)

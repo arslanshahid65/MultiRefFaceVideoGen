@@ -3,19 +3,23 @@ import torch
 
 from torch.utils.data import DataLoader
 
-from logger import Logger
-from inter-modules.model import GeneratorFullModel, DiscriminatorFullModel
+from src.utils.logger import Logger
+from src.models.inter_models.model import GeneratorFullModel, DiscriminatorFullModel
 
 from torch.optim.lr_scheduler import MultiStepLR
 
 from sync_batchnorm import DataParallelWithCallback
 
-from src.frames_dataset import DatasetRepeater
+from utils.frames_dataset import DatasetRepeater
+
 from zenml import step
+from zenml.clinet import Client
+from mlflow
+
 # TO DO: Enable Training with multiple source frames
+experiment_tracker = Client().active_stack.experiment_tracker
 
-
-@step
+@step(experiment_tracker = experiment_tracker.name)
 def train(config, generator, discriminator, kp_detector, checkpoint, log_dir, frames_data, device_ids):
     train_params = config['train_params']
 
@@ -72,12 +76,29 @@ def train(config, generator, discriminator, kp_detector, checkpoint, log_dir, fr
 
                 losses_generator.update(losses_discriminator)
                 losses = {key: value.mean().detach().data.cpu().numpy() for key, value in losses_generator.items()}
+                for name, value in losses.items():
+                    mlflow.log_metric(name, float(value), step=epoch)
                 logger.log_iter(losses=losses)
 
             scheduler_generator.step()
             scheduler_discriminator.step()
             scheduler_kp_detector.step()
-            
+            # Log individual models
+            mlflow.pytorch.log_model(generator, artifact_path="generator")
+            mlflow.pytorch.log_model(discriminator, artifact_path="discriminator")
+            mlflow.pytorch.log_model(kp_detector, artifact_path="kp_detector")
+            # Full checkpoint for reproducibility
+            checkpoint = {
+                            "generator": generator.state_dict(),
+                            "discriminator": discriminator.state_dict(),
+                            "kp_detector": kp_detector.state_dict(),
+                            "optimizer_generator": optimizer_generator.state_dict(),
+                            "optimizer_discriminator": optimizer_discriminator.state_dict(),
+                            "optimizer_kp_detector": optimizer_kp_detector.state_dict(),
+                            "epoch": epoch
+                            }
+            torch.save(checkpoint, "checkpoint_epoch_{:04d}.pth.tar".format(epoch))
+            mlflow.log_artifact("checkpoint_epoch_{:04d}.pth.tar".format(epoch), artifact_path="checkpoints")
             logger.log_epoch(epoch, {'generator': generator,
                                      'discriminator': discriminator,
                                      'kp_detector': kp_detector,
