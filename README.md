@@ -3,9 +3,9 @@ The project aims to develop a end to end video compression pipeline by using nov
 
 ## Model Implementation
 
-The Multi-Frame Attention model is implemented in:
+The Multi-Frame Attention model is implemented in:  
 src/  
-└── models/  
-    └── inter-models/  
-        └── multi-frame-attention.py
+&nbsp;&nbsp;&nbsp;&nbsp;└── models/  
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└── inter-models/  
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└── multi-frame-attention.py
  
